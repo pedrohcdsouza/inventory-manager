@@ -1,4 +1,4 @@
-package server.models;
+package com.pedrohcdsouza.server.models;
 
 public class Product {
     private int id;

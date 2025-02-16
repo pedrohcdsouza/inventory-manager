@@ -1,0 +1,3 @@
+server\database\Database.class
+server\service\ServerSocketObj.class
+server\models\Product.class
