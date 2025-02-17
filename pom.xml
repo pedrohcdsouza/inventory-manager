@@ -3,31 +3,26 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <!-- Informações do projeto -->
     <groupId>com.pedrohcdsouza</groupId>
     <artifactId>inventory-manager</artifactId>
     <version>1.0-SNAPSHOT</version>
 
-    <!-- Versão do Java -->
     <properties>
         <maven.compiler.source>23</maven.compiler.source>
         <maven.compiler.target>23</maven.compiler.target>
     </properties>
 
-    <!-- Dependências (adicione aqui as bibliotecas que precisar) -->
     <dependencies>
-        <!-- Biblioteca para manipulação de CSV (se necessário) -->
         <dependency>
-            <groupId>com.opencsv</groupId>
-            <artifactId>opencsv</artifactId>
-            <version>5.7.1</version>
+            <groupId>org.xerial</groupId>
+            <artifactId>sqlite-jdbc</artifactId>
+            <version>3.45.1.0</version>
         </dependency>
     </dependencies>
 
-    <!-- Configuração do Build -->
     <build>
         <plugins>
-            <!-- Plugin para compilar com a versão correta do Java -->
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -38,7 +33,6 @@
                 </configuration>
             </plugin>
 
-            <!-- Plugin para executar a aplicação -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
