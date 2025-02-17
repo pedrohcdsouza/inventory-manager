@@ -1,3 +1,4 @@
-server\database\Database.class
-server\service\ServerSocketObj.class
-server\models\Product.class
+com\pedrohcdsouza\server\Main.class
+com\pedrohcdsouza\server\models\Product.class
+com\pedrohcdsouza\server\service\ServerSocketObj.class
+com\pedrohcdsouza\server\database\Database.class
