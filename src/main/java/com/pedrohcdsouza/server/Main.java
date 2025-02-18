@@ -1,6 +1,5 @@
 package com.pedrohcdsouza.server;
 
-import com.pedrohcdsouza.server.database.Database;
 import com.pedrohcdsouza.server.service.ServerSocketObj;
 
 public class Main {
