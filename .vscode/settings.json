@@ -15,5 +15,5 @@
             "c:\\java-libs\\xerial-sqlite-jdbc-3c697e8\\lib\\jdbc-api-1.4.jar"
         ]
     },
-    "java.configuration.updateBuildConfiguration": "interactive"
+    "java.configuration.updateBuildConfiguration": "automatic"
 }
