@@ -9,6 +9,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import com.pedrohcdsouza.server.models.Product;
+import com.pedrohcdsouza.server.utils.ServerLogger;
 
 public class ServerService {
     private ServerSocket serverSocket;
@@ -33,24 +34,25 @@ public class ServerService {
         try {
             serverSocket = new ServerSocket(port);
             running = true;
-            System.out.println("Server started on port " + port);
+            ServerLogger.info("Server started on port " + port);
             new Thread(() -> acceptConnections()).start();
         } catch (IOException e) {
-            e.printStackTrace();
+            ServerLogger.error("Failed to start server: " + e.getMessage());
         }
     }
     
     private void acceptConnections() {
         while (running) {
             try {
-                System.out.println("Waiting for client...");
+                ServerLogger.info("Waiting for client connections...");
                 Socket clientSocket = serverSocket.accept();
                 ClientHandler clientHandler = new ClientHandler(clientSocket);
                 clients.add(clientHandler);
+                ServerLogger.connect("New client connected from " + clientSocket.getInetAddress().getHostAddress());
                 new Thread(clientHandler).start();
             } catch (IOException e) {
                 if (running) {
-                    e.printStackTrace();
+                    ServerLogger.error("Connection acceptance failed: " + e.getMessage());
                 }
             }
         }
@@ -62,9 +64,10 @@ public class ServerService {
         try {
             if (serverSocket != null && !serverSocket.isClosed()) {
                 serverSocket.close();
+                ServerLogger.info("Server stopped successfully");
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            ServerLogger.error("Failed to stop server: " + e.getMessage());
         }
     }
     
@@ -116,8 +119,10 @@ public class ServerService {
         private void handleAuth(String key) {
             if (AUTH_KEY != null && AUTH_KEY.equals(key)) {
                 this.isAuthenticated = true;
+                ServerLogger.auth("Client " + clientSocket.getInetAddress().getHostAddress() + " authenticated successfully");
                 sendMessage("SUCCESS:Authentication successful");
             } else {
+                ServerLogger.warning("Failed authentication attempt from " + clientSocket.getInetAddress().getHostAddress());
                 sendMessage("ERROR:Invalid authentication key");
                 closeConnection();
             }
@@ -129,27 +134,34 @@ public class ServerService {
                     case "ADD_PRODUCT":
                         Product newProduct = new Product(null, command[1], Double.parseDouble(command[2]), Integer.parseInt(command[3]));
                         database.addProduct(newProduct);
+                        ServerLogger.info("Product added: " + newProduct);
                         sendMessage("SUCCESS");
                         break;
                         
                     case "REMOVE_PRODUCT":
-                        database.removeProduct(Integer.parseInt(command[1]));
+                        int removeId = Integer.parseInt(command[1]);
+                        database.removeProduct(removeId);
+                        ServerLogger.info("Product removed: ID " + removeId);
                         sendMessage("SUCCESS");
                         break;
                         
                     case "UPDATE_PRODUCT":
                         Product updateProduct = new Product(Integer.parseInt(command[1]), command[2], Double.parseDouble(command[3]), Integer.parseInt(command[4]));
                         database.updateProduct(updateProduct);
+                        ServerLogger.info("Product updated: " + updateProduct);
                         sendMessage("SUCCESS");
                         break;
                         
                     default:
+                        ServerLogger.warning("Invalid command received: " + command[0]);
                         sendMessage("ERROR");
                         break;
                 }
             } catch (NumberFormatException e) {
+                ServerLogger.error("Invalid number format in command: " + e.getMessage());
                 sendMessage("ERROR:Invalid number format");
             } catch (ArrayIndexOutOfBoundsException e) {
+                ServerLogger.error("Missing parameters in command");
                 sendMessage("ERROR:Missing parameters");
             }
         }
@@ -162,10 +174,14 @@ public class ServerService {
             try {
                 if (input != null) input.close();
                 if (output != null) output.close();
-                if (clientSocket != null) clientSocket.close();
+                if (clientSocket != null) {
+                    String clientAddress = clientSocket.getInetAddress().getHostAddress();
+                    clientSocket.close();
+                    ServerLogger.connect("Client disconnected: " + clientAddress);
+                }
                 clients.remove(this);
             } catch (IOException e) {
-                e.printStackTrace();
+                ServerLogger.error("Error closing client connection: " + e.getMessage());
             }
         }
     }
