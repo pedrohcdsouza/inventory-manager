@@ -1,10 +1,10 @@
 package com.pedrohcdsouza.server;
 
-import com.pedrohcdsouza.server.service.ServerSocketObj;
+import com.pedrohcdsouza.server.service.ServerService;
 
 public class Main {
     public static void main(String[] args) {
-        ServerSocketObj sv = new ServerSocketObj(null);
-        sv.startServer();
+        ServerService server = new ServerService(8080);
+        server.startServer();
     }
 }
